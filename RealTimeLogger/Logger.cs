@@ -106,6 +106,7 @@ namespace RealTimeLogger
                 };
 
             await logRef.AddAsync(errorlog);
+            await UpdateServiceCpuConfiguration(log.LogType);
         }
     }
 

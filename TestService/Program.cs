@@ -14,12 +14,12 @@ namespace TestService
         {
             string serviceName = ConfigurationManager.AppSettings["ServiceName"].ToString();
             Logger logger = new Logger(serviceName);
-            Processor processor = new Processor();
-            
-            try
-            {
-                processor.Process();
 
+            Random rnd = new Random();
+            var random = rnd.Next(1, 5);
+
+            if (random % 2 == 0)
+            {
                 await logger.Log(new Log()
                 {
                     LogType = LogType.Success,
@@ -27,7 +27,7 @@ namespace TestService
                     Memory = GetMemoryCounter(),
                 });
             }
-            catch (System.Exception ex)
+            else
             {
                 await logger.Log(new Log()
                 {
@@ -35,11 +35,30 @@ namespace TestService
                     Cpu = GetCPUCounter(),
                     Memory = GetMemoryCounter(),
                     Disk = GetDiskCounter(),
-                    FailedDetails = ex.Message
+                    FailedDetails = GetException(random)
                 });
-
-                throw ex;
             }
+        }
+
+        private static string GetException(int random)
+        {
+            switch (random)
+            {
+                case 1:
+                    return "Null Reference Exception Occuered";
+                case 2:
+                    return "Invalid Cast Exception Occuered";
+                case 3:
+                    return "Out Of Memory Exception Occuered";
+                case 4:
+                    return "Stack Overflow Exception Occuered";
+                case 5:
+                    return "Unknown error Occuered";
+                default:
+                    break;
+            }
+
+            return string.Empty;
         }
 
         public static double GetCPUCounter()
@@ -69,14 +88,6 @@ namespace TestService
                 freeSpacePerc = ((dDrive.TotalSize / 1024) / 1024) / 1024 - ((dDrive.AvailableFreeSpace / 1024) / 1024) / 1024;
             }
             return freeSpacePerc;
-        }
-    }
-
-    public class Processor
-    {
-        public void Process()
-        {
-
         }
     }
 }
